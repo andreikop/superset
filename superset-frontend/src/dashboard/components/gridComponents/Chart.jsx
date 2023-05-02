@@ -139,6 +139,7 @@ class Chart extends React.Component {
     this.handleFilterMenuClose = this.handleFilterMenuClose.bind(this);
     this.exportCSV = this.exportCSV.bind(this);
     this.exportFullCSV = this.exportFullCSV.bind(this);
+    this.exportXLSX = this.exportXLSX.bind(this);
     this.forceRefresh = this.forceRefresh.bind(this);
     this.resize = this.resize.bind(this);
     this.setDescriptionRef = this.setDescriptionRef.bind(this);
@@ -324,7 +325,7 @@ class Chart extends React.Component {
     }
   };
 
-  exportCSV(isFullCSV = false) {
+  exportTable(format, isFullCSV) {
     this.props.logEvent(LOG_ACTIONS_EXPORT_CSV_DASHBOARD_CHART, {
       slice_id: this.props.slice.slice_id,
       is_cached: this.props.isCached,
@@ -334,14 +335,22 @@ class Chart extends React.Component {
         ? { ...this.props.formData, row_limit: this.props.maxRows }
         : this.props.formData,
       resultType: 'full',
-      resultFormat: 'csv',
+      resultFormat: format,
       force: true,
       ownState: this.props.ownState,
     });
   }
 
+  exportCSV(isFullCSV = false) {
+    this.exportTable('csv', isFullCSV);
+  }
+
   exportFullCSV() {
     this.exportCSV(true);
+  }
+
+  exportXLSX() {
+    this.exportTable('xlsx', false);
   }
 
   forceRefresh() {
@@ -438,6 +447,7 @@ class Chart extends React.Component {
           onExploreChart={this.onExploreChart}
           exportCSV={this.exportCSV}
           exportFullCSV={this.exportFullCSV}
+          exportXLSX={this.exportXLSX}
           updateSliceName={updateSliceName}
           sliceName={sliceName}
           supersetCanExplore={supersetCanExplore}
